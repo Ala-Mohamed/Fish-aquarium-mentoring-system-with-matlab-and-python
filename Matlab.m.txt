@@ -1,0 +1,145 @@
+Image_Path =fullfile("hfh.jpg"); %Uplaod 
+First =imread(Image_Path); 
+%changing the brightness and Display the original image
+figure();
+subplot(2,3,1);
+imshow(First);
+title('Original Image');
+% Adjust brightness by adding a positive value to each pixel
+bright_img = First + 100;
+bright_img(bright_img > 255) = 255; 
+subplot(2,3,2);
+imshow(bright_img);
+title('Brightened Image');
+
+% Adjust brightness by adding a negative value to each pixel
+dark_img = First - 100;
+dark_img(dark_img < 0) = 0; 
+subplot(2,3,3);
+imshow(dark_img);
+title('Darkened Image');
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Display histograms of the brightened and darkened images
+subplot(2,3,4);
+imhist(First);
+xlabel('Intensity');
+ylabel('number of pixels');
+title('Original first Histogram');
+subplot(2,3,5);
+imhist(bright_img);
+xlabel('Intensity');
+ylabel('number of pixels');
+title('Brightened Histogram');
+subplot(2,3,6);
+imhist(dark_img);
+xlabel('Intensity');
+ylabel('number of pixels');
+title('Darkened Histogram');
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Plot output transforms for the original, brightened and darkened images
+figure;
+x = 0:255;
+y1 = x; % Output transform for original image (y=x)
+y2 = x + 100; % Output transform for brightened image (y=x+100)
+y2(y2 > 255) = 255; % Saturate values above 255
+y3 = x - 100; % Output transform for darkened image (y=x-100)
+y3(y3 < 0) = 0; % Saturate values below 0
+
+subplot(1,3,1);
+plot(x,y1,'b');
+xlabel('Input Pixel Values');
+ylabel('Output Pixel Values');
+title('Original Output Transform');
+
+subplot(1,3,2);
+plot(x,y2,'r');
+xlabel('Input Pixel Values');
+ylabel('Output Pixel Values');
+title('Brightened Output Transform');
+
+subplot(1,3,3);
+plot(x,y3,'g');
+xlabel('Input Pixel Values');
+ylabel('Output Pixel Values');
+title('Darkened Output Transform');
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ %d) 8 Points
+%Enhance image contrast
+figure();
+
+subplot(2,2,1);
+imshow(First);
+title("My Original Image");
+
+subplot(2,2,2);
+imhist(First);
+xlabel('Intensity');
+ylabel('number of pixels');
+title("Its histogram");
+
+subplot(2,2,3);
+enhancedimage = histeq(First);
+imshow(enhancedimage);
+title("Enhanced Image");
+
+subplot(2,2,4);
+imhist(enhancedimage);
+xlabel('Intensity');
+ylabel('number of pixels');
+title("Its histogram");
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Plot the output transform
+figure();
+
+subplot(2,2,1);
+imshow(First);
+title("My Original Image");
+
+subplot(2,2,2);
+plot(x,x);
+xlabel('Input Pixel Values');
+ylabel('Output Pixel Values');
+title("Plot Original Image");
+
+[First,eq]=histeq(First);
+subplot(2,2,3);
+imshow(enhancedimage);
+title("My Enhanced Image");
+
+subplot(2,2,4);
+plot(x,eq);
+xlabel('Input Pixel Values');
+ylabel('Output Pixel Values');
+title("Plot Enhanced Image")
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Perform singular value decomposition (SVD)
+[U,S,V] = pagesvd(double(First));
+% Keep only the first k singular values to compress the image
+k = 10;
+U_k = U(:,1:k);
+S_k = S(1:k,1:k);
+V_k = V(:,1:k);
+compressedImage = uint8(U_k * S_k * V_k');
+% Display the original image and the compressed image side by side
+figure('Name', 'Original and Compressed Images');
+subplot(1,2,1);
+imshow(First);
+title('Original Image');
+subplot(1,2,2);
+imshow(compressedImage);
+title(sprintf('Compressed Image (k=%d)', k));
+% Display the histograms of the original image and the compressed image side by side
+figure('Name', 'Histograms of original and Compressed Images');
+subplot(1,2,1);
+imhist(First);
+title('Histogram of original Image');
+subplot(1,2,2);
+imhist(compressedImage);
+title('Histogram of Compressed Image');
+%%%%
+V = randn(10, 20, 30); 
+% Permute the dimensions of V
+V_transposed = permute(V, [3 2 1]);
+% Reshape V_transposed into a matrix
+V_transposed = reshape(V_transposed, size(V, 3), size(V, 2)*size(V, 1));
